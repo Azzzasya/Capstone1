@@ -56,8 +56,8 @@ def tampil_menu():
 def pilihan_menu():
     while True:
 
-        pilihan_menu = int(input("Masukkan pilihan menu (0/00/1/2/3/4/5): "))
-        if pilihan_menu in [0, 00, 1, 2, 3, 4, 5]:
+        pilihan_menu = int(input("Masukkan pilihan menu (0/1/2/3/4/5/6): "))
+        if pilihan_menu in [0, 1, 2, 3, 4, 5, 6]:
             return pilihan_menu
         else:
             print("Silakan masukkan pilihan yang sesuai.")
@@ -168,7 +168,7 @@ def printTabelMahasiswaLulus(data):
 
     # Menambahkan list dari kamus
     tabelMahasiswaLulus = [baris for baris in zip(data['NIM'], data['Nama'], data['Tugas'], data['UTS'], data['UAS'], data['Predikat'], data['Keterangan'])
-                           if baris[5] in ['C', 'BC', 'B', 'AB']]
+                           if baris[5] in ['C', 'BC', 'B', 'AB','A']]
 
     # Nama kolom tabel
     headers_tabelMahasiswaLulus = ['NIM', 'Nama', 'Tugas', 'UTS', 'UAS', 'Predikat', 'Keterangan']
@@ -196,7 +196,7 @@ def printTabelMahasiswaTidakLulus(data):
 
     # Menambahkan list dari kamus
     tabelMahasiswaTidakLulus = [row for row in zip(data['NIM'], data['Nama'], data['Tugas'], data['UTS'], data['UAS'], data['Predikat'], data['Keterangan'])
-                                if row[5] not in ['C', 'BC', 'B', 'AB']]
+                                if row[5] not in ['C', 'BC', 'B', 'AB','A']]
 
     # Nama kolom tabel
     headers_tabelMahasiswaTidakLulus = ['NIM', 'Nama', 'Tugas', 'UTS', 'UAS', 'Predikat', 'Keterangan']
@@ -207,103 +207,126 @@ def printTabelMahasiswaTidakLulus(data):
 
 ## Fungsi untuk Menambah data nilai mahasiswa
 def MenambahNilai():
+    # Meminta dosen input NIM untuk menambah data
     print("Silahkan input Data Mahasiswa yang ingin ditambah:")
-    nim = int(input("Masukkan NIM: "))
+    try:
+        nim = int(input("Masukkan NIM: "))
 
-    # Memeriksa apakah NIM berada dalam rentang yang benar (123130001-123130150)
-    if 123130001 <= nim <= 123130150:
-        # Cek jika NIM sudah ada dalam data
-        if nim in data['NIM']:
-            print("Error: Mahasiswa dengan NIM tersebut sudah terdaftar.")
-            return  # Menghentikan fungsi jika NIM sudah ada
+        # Memeriksa apakah NIM berada dalam rentang yang benar (123130001-123130150)
+        if 123130001 <= nim <= 123130150:
+            # Cek jika NIM sudah ada dalam data
+            if nim in data['NIM']:
+                print("Error: Mahasiswa dengan NIM tersebut sudah terdaftar.")
+                return  # Menghentikan fungsi jika NIM sudah ada
 
-        nama = input("Masukkan Nama: ")
-        tugas = float(input("Masukkan Nilai Tugas: "))
-        uts = float(input("Masukkan Nilai UTS: "))
-        uas = float(input("Masukkan Nilai UAS: "))
+            nama = input("Masukkan Nama: ")
+            try:
+                tugas = float(input("Masukkan Nilai Tugas: "))
+                uts = float(input("Masukkan Nilai UTS: "))
+                uas = float(input("Masukkan Nilai UAS: "))
+            except ValueError:
+                print("Error: Masukkan Nilai Tugas, UTS, dan UAS dalam bentuk angka (float).")
+                return  # Menghentikan fungsi jika input tidak valid
 
-        # Menambahkan data baru ke dalam dictionary
-        data['NIM'].append(nim)
-        data['Nama'].append(nama)
-        data['Tugas'].append(tugas)
-        data['UTS'].append(uts)
-        data['UAS'].append(uas)
+            # Menambahkan data baru ke dalam dictionary
+            data['NIM'].append(nim)
+            data['Nama'].append(nama)
+            data['Tugas'].append(tugas)
+            data['UTS'].append(uts)
+            data['UAS'].append(uas)
 
-        # Menghitung predikat dan keterangan untuk data baru
-        predikat, keterangan = hitung_predikat_keterangan(tugas, uts, uas)
-        data['Predikat'].append(predikat)
-        data['Keterangan'].append(keterangan)
+            # Menghitung predikat dan keterangan untuk data baru
+            predikat, keterangan = hitung_predikat_keterangan(tugas, uts, uas)
+            data['Predikat'].append(predikat)
+            data['Keterangan'].append(keterangan)
 
-        # Menampilkan tabel nilai terbaru
-        printTabelNilai(data)
-    else:
-        print("Silahkan input NIM yang sesuai dalam rentang 123130001-123130150")
+            # Menampilkan tabel nilai terbaru
+            printTabelNilai(data)
+        else:
+            print("Silahkan input NIM yang sesuai dalam rentang 123130001-123130150")
+
+    except ValueError:
+        print("Error: Masukkan NIM dalam bentuk angka (integer).")
 
 ## Fungsi untuk memperbarui data mahasiswa
 def updateDataMahasiswa(data):
-    # Meminta input NIM dari dosen
-    nim_mahasiswa = int(input("Masukkan NIM mahasiswa yang ingin di-update: "))
+    # Meminta dosen input NIM untuk memperbarui data
+    try:
+        nim_mahasiswa = int(input("Masukkan NIM mahasiswa yang ingin di-update: "))
 
-    # Cari indeks mahasiswa berdasarkan NIM
-    index_mahasiswa = -1
-    for i, nim in enumerate(data['NIM']):
-        if nim == nim_mahasiswa:
-            index_mahasiswa = i
-            break
+        # Cari indeks mahasiswa berdasarkan NIM
+        index_mahasiswa = -1
+        for i, nim in enumerate(data['NIM']):
+            if nim == nim_mahasiswa:
+                index_mahasiswa = i
+                break
 
-    # Periksa apakah NIM mahasiswa ditemukan
-    if index_mahasiswa != -1:
-        # Meminta input nilai baru
-        tugas_baru = float(input("Masukkan nilai tugas baru: "))
-        uts_baru = float(input("Masukkan nilai UTS baru: "))
-        uas_baru = float(input("Masukkan nilai UAS baru: "))
+        # Periksa apakah NIM mahasiswa ditemukan
+        if index_mahasiswa != -1:
+            # Meminta input nilai baru
+            try:
+                tugas_baru = float(input("Masukkan nilai tugas baru: "))
+                uts_baru = float(input("Masukkan nilai UTS baru: "))
+                uas_baru = float(input("Masukkan nilai UAS baru: "))
+            except ValueError:
+                print("Error: Masukkan Nilai Tugas, UTS, dan UAS dalam bentuk angka (float).")
+                return  # Menghentikan fungsi jika input tidak valid
 
-        # Memperbarui nilai mahasiswa
-        data['Tugas'][index_mahasiswa] = tugas_baru
-        data['UTS'][index_mahasiswa] = uts_baru
-        data['UAS'][index_mahasiswa] = uas_baru
+            # Memperbarui nilai mahasiswa
+            data['Tugas'][index_mahasiswa] = tugas_baru
+            data['UTS'][index_mahasiswa] = uts_baru
+            data['UAS'][index_mahasiswa] = uas_baru
 
-        # Memanggil kembali fungsi hitung_predikat_keterangan untuk menghitung nilai predikat dan keterangan yang baru
-        predikat_baru, keterangan_baru = hitung_predikat_keterangan(tugas_baru, uts_baru, uas_baru)
-        
-        # Memperbarui nilai predikat dan keterangan mahasiswa
-        data['Predikat'][index_mahasiswa] = predikat_baru
-        data['Keterangan'][index_mahasiswa] = keterangan_baru
+            # Memanggil kembali fungsi hitung_predikat_keterangan untuk menghitung nilai predikat dan keterangan yang baru
+            predikat_baru, keterangan_baru = hitung_predikat_keterangan(tugas_baru, uts_baru, uas_baru)
+            
+            # Memperbarui nilai predikat dan keterangan mahasiswa
+            data['Predikat'][index_mahasiswa] = predikat_baru
+            data['Keterangan'][index_mahasiswa] = keterangan_baru
 
-        # Menampilkan hasil pembaruan
-        print("Data mahasiswa berhasil di-update:")
-        printTabelNilai(data)
-        print(f"Predikat dan keterangan baru untuk mahasiswa dengan NIM {nim_mahasiswa}: {predikat_baru}, {keterangan_baru}")
-    else:
-        print("NIM mahasiswa tidak ditemukan.")
+            # Menampilkan hasil pembaruan
+            print("Data mahasiswa berhasil di-update:")
+            printTabelNilai(data)
+            print(f"Predikat dan keterangan baru untuk mahasiswa dengan NIM {nim_mahasiswa}: {predikat_baru}, {keterangan_baru}")
+        else:
+            print("NIM mahasiswa tidak ditemukan.")
+
+    except ValueError:
+        print("Error: Masukkan NIM dalam bentuk angka (integer).")
 
 
 ## Fungsi untuk menghapus data mahasiswa berdasarkan nama
 def hapusDataMahasiswa(data):
-    # Minta input NIM mahasiswa yang akan dihapus
-    nim_mahasiswa_hapus = int(input("Masukkan NIM mahasiswa yang akan dihapus: "))
+    # Meminta dosen input NIM untuk menghapus data
+    try:
+        nim_mahasiswa_hapus = int(input("Masukkan NIM mahasiswa yang akan dihapus: "))
 
-    # Cari indeks mahasiswa berdasarkan NIM
-    index_mahasiswa = -1
-    for i, nim in enumerate(data['NIM']):
-        if nim == nim_mahasiswa_hapus:
-            index_mahasiswa = i
-            break
+        # Cari indeks mahasiswa berdasarkan NIM
+        index_mahasiswa = -1
+        for i, nim in enumerate(data['NIM']):
+            if nim == nim_mahasiswa_hapus:
+                index_mahasiswa = i
+                break
 
-    # Periksa apakah NIM mahasiswa ditemukan
-    if index_mahasiswa != -1:
-        # Hapus data mahasiswa
-        data['NIM'].pop(index_mahasiswa)
-        data['Nama'].pop(index_mahasiswa)
-        data['Tugas'].pop(index_mahasiswa)
-        data['UTS'].pop(index_mahasiswa)
-        data['UAS'].pop(index_mahasiswa)
-        data['Predikat'].pop(index_mahasiswa)
-        data['Keterangan'].pop(index_mahasiswa)
+        # Periksa apakah NIM mahasiswa ditemukan
+        if index_mahasiswa != -1:
+            # Hapus data mahasiswa
+            data['NIM'].pop(index_mahasiswa)
+            data['Nama'].pop(index_mahasiswa)
+            data['Tugas'].pop(index_mahasiswa)
+            data['UTS'].pop(index_mahasiswa)
+            data['UAS'].pop(index_mahasiswa)
+            data['Predikat'].pop(index_mahasiswa)
+            data['Keterangan'].pop(index_mahasiswa)
 
-        print(f"Data mahasiswa dengan NIM {nim_mahasiswa_hapus} berhasil dihapus.")
-    else:
-        print("NIM mahasiswa tidak ditemukan.")
+            print(f"Data mahasiswa dengan NIM {nim_mahasiswa_hapus} berhasil dihapus.")
+            printTabelNilai(data)
+        else:
+            print("NIM mahasiswa tidak ditemukan.")
+
+    except ValueError:
+        print("Error: Masukkan NIM dalam bentuk angka (integer).")
+
 
 Menu = True
 while Menu:
@@ -316,7 +339,7 @@ while Menu:
                 choice = pilihan_menu()
                 
                 if hasil_login.startswith("Selamat datang, mahasiswa"):
-                    if choice not in [0,00,1, 2]:
+                    if choice not in [0, 1, 2, 3]:
                         print("Akses ditolak. Mahasiswa hanya dapat mengakses menu 1 dan 2.")
                         continue  # Kembali ke tampilan menu
                 if choice == 0:
@@ -340,27 +363,32 @@ while Menu:
                         break
                 elif choice == 3:
                     print('''a. Daftar Nilai Mahasiswa Keseluruhan \n b. Daftar Nilai Mahasiswa yang Lulus \n c. Daftar Nilai Mahasiswa yang Tidak Lulus''')
-                    sub_choice = input("Pilih submenu (a, b, c): ")
-                    if sub_choice.lower() == "a":
-                        printTabelNilai(data) 
-                        back = MenuutamaTANYA()
-                        if back == 2:
-                            Menu = False
-                            break
-                    elif sub_choice.lower() == "b":
-                        printTabelMahasiswaLulus(data) 
-                        back = MenuutamaTANYA()
-                        if back == 2:
-                            Menu = False
-                            break
-                    elif sub_choice.lower() == "c":
-                        printTabelMahasiswaTidakLulus(data)
-                        back = MenuutamaTANYA()
-                        if back == 2:
-                            Menu = False
-                            break
-                    else:
-                        print("Pilihan submenu tidak valid.")
+                    
+                    try:
+                        sub_choice = input("Pilih submenu (a, b, c): ")
+                        
+                        if sub_choice.lower() == "a":
+                            printTabelNilai(data) 
+                            back = MenuutamaTANYA()
+                            if back == 2:
+                                Menu = False
+                                break
+                        elif sub_choice.lower() == "b":
+                            printTabelMahasiswaLulus(data) 
+                            back = MenuutamaTANYA()
+                            if back == 2:
+                                Menu = False
+                                break
+                        elif sub_choice.lower() == "c":
+                            printTabelMahasiswaTidakLulus(data)
+                            back = MenuutamaTANYA()
+                            if back == 2:
+                                Menu = False
+                                break
+                        else:
+                            print("Pilihan submenu tidak valid.")
+                    except ValueError:
+                        print("Error: Pilihan submenu harus berupa huruf (a, b, c).")
                 elif choice == 4:
                     MenambahNilai()
                     back = MenuutamaTANYA()
