@@ -55,7 +55,7 @@ To view the list of students who failed the course.
 ![image7](Mahasiswa_MengecekNilai.png)
 To view a specific student's grade by entering their student ID (NIM).
 
-`The data in the screenshot originates from the initial dataset created for programming purposes.^` 
+`The data in the screenshot originates from the initial dataset created for programming purposes.` 
 
 ### **3. Adding student grade records.**
 
@@ -63,7 +63,7 @@ To view a specific student's grade by entering their student ID (NIM).
 
 This menu allows the user to input and store information for new students, ensuring that the NIM is unique and falls within the specified range. It also computes grade predicates and descriptions for the new data and displays the updated dataset.
 
-`The entered NIM falls within the correct range (123130001-123130150), ensuring that it's a valid student ID.^`
+`The entered NIM falls within the correct range (123130001-123130150), ensuring that it's a valid student ID.`
 ### **4. Updating student grades.**
 
 ![image9](Dosen_PerbaruiNilaiMahasiswa.png)
